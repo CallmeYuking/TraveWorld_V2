@@ -12,6 +12,11 @@
     <p>
         <a href="/spots/<%=spot._id %>/edit">Edit</a>
     </p>
+
+    <form action="/spots/<%=spot._id%>?_method=DELETE" method="POST">
+        <button>Delete</button>
+    </form>
+
     <footer>
         <a href="/spots"> All Spots!</a>
     </footer>

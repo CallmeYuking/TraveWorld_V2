@@ -60,6 +60,11 @@ app.put('/spots/:id', async (req, res) => {
     res.redirect(`/spots/${spot._id}`)
 } )
 
+app.delete('/spots/:id', async (req, res) => {
+    const { id } = req.params;
+    await Campground.findByIdAndDelete(id);
+    res.redirect('/spots');
+})
 
 app.listen(3000, () => {
     console.log('Server on port 3000')
