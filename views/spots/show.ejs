@@ -2,9 +2,9 @@
 <h1>SPOT SHOW!!!</h1>
 <h2><%= spot.title %></h2>
 <h2><%= spot.location %></h2>
-<p>
-    <a href="/spots/<%=spot._id %>/edit">Edit</a>
-</p>
+<img src="<%= spot.image %>">
+<p><%= spot.description %></p>
+<p><a href="/spots/<%=spot._id %>/edit">Edit</a></p>
 
 <form action="/spots/<%=spot._id%>?_method=DELETE" method="POST">
     <button>Delete</button>
