@@ -3,8 +3,21 @@
 <div>
     <a href="/spots/new">Add Spot!</a>
 </div>
-<ul>
-    <% for (let spot of spots) {%>
-        <li><a href="/spots/<%= spot._id %>"><%= spot.title %></a></li>
-    <% } %>
-</ul>
+<% for (let spot of spots) {%>
+    <div class="card" mb-3>
+        <div class="row">
+            <div class="col-md-4">
+                <img class="img-fluid" src="<%=spot.image%> " alt="">
+            </div>
+            <div class="col-md-8">
+                <h5 class="card-title"><%= spot.title %></h5>
+                <p class="card-tet"><%= spot.description %></p>
+                <p class="card-text">
+                    <small class="text-muted"><%= spot.location %></small> 
+                </p>
+                <a class="btn btn-primary" href="/spots/<%=spot._id %>">View Spot</a>
+            </div>
+        </div>
+    </div>
+<% } %>
+
