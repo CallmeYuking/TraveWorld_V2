@@ -1,15 +1,27 @@
 <% layout('layouts/boilerplate') %> 
-<h1>SPOT SHOW!!!</h1>
-<h2><%= spot.title %></h2>
-<h2><%= spot.location %></h2>
-<img src="<%= spot.image %>">
-<p><%= spot.description %></p>
-<p><a href="/spots/<%=spot._id %>/edit">Edit</a></p>
-
-<form action="/spots/<%=spot._id%>?_method=DELETE" method="POST">
-    <button>Delete</button>
-</form>
-
+<div class="row">
+    <div class="col-6 offset-3">
+        <div class="card mb-3">
+            <img src="<%= spot.image %>" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title"><%= spot.title %></h5>
+              <p class="card-text"><%= spot.description %></p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item text-muted"><%= spot.location %></li>
+              <li class="list-group-item">$ <%=spot.price%> / night</li>
+            </ul>
+            <div class="card-body">
+              <a href="/spots/<%=spot._id %>/edit" class="card-link btn btn-success">Edit</a>
+              <form class="d-inline" action="/spots/<%=spot._id%>?_method=DELETE" method="POST">
+                <button class="btn btn-danger">Delete</button>
+              </form>
+            </div>
+            <div class="card-footer text-muted">2 days ago</div>
+          </div>
+    </div>
+</div>
+ 
 <footer>
     <a href="/spots"> All Spots!</a>
 </footer>
