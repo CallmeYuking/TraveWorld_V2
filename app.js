@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
+const catchAsync = require('./utils/catchAsync')
 const methodOverride = require('method-override')
 const Campground = require('./models/campground');
 
@@ -31,40 +32,44 @@ app.get('/', (req, res) => {
     res.render('home');
 })
 
-app.get('/spots', async (req, res) => { 
+app.get('/spots', catchAsync(async (req, res) => { 
     const spots = await Campground.find({});
     res.render('spots/index', { spots });
-})
+}))
 
 app.get('/spots/new', (req, res) => {
     res.render('spots/new')
 })
-app.post('/spots', async (req, res) => {
+app.post('/spots', catchAsync(async (req, res) => {
     const spot = new Campground(req.body.spot)
     await spot.save();
     res.redirect(`/spots/${spot._id}`)
-})
+}))
 
-app.get('/spots/:id', async (req, res) => {
+app.get('/spots/:id', catchAsync(async (req, res) => {
     const spot = await Campground.findById(req.params.id);
     res.render('spots/show', { spot })
-})
+}))
 
-app.get('/spots/:id/edit', async (req, res) => {
+app.get('/spots/:id/edit', catchAsync(async (req, res) => {
     const spot = await Campground.findById(req.params.id);
     res.render('spots/edit', {spot})
-})
+}))
 
-app.put('/spots/:id', async (req, res) => {
+app.put('/spots/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const spot = await Campground.findByIdAndUpdate(id, { ...req.body.spot })
     res.redirect(`/spots/${spot._id}`)
-} )
+} ))
 
-app.delete('/spots/:id', async (req, res) => {
+app.delete('/spots/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/spots');
+}))
+
+app.use((err, req, res, next) => {
+    res.send('Oh boy, something went wrong!')
 })
 
 app.listen(3000, () => {
