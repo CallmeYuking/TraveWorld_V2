@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const Joi = require('joi');
+const {spotSchema} = require('./schemas.js');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override')
@@ -29,6 +30,16 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
+
+const validateSpot = (req, res, next) => {
+    const { error } = spotSchema.validate(req.body);
+    if (error) {
+        const msg =  error.details.map( el => el.message).join(',');
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
  
 app.get('/', (req, res) => { 
     res.render('home');
@@ -42,23 +53,8 @@ app.get('/spots', catchAsync(async (req, res) => {
 app.get('/spots/new', (req, res) => {
     res.render('spots/new')
 })
-app.post('/spots', catchAsync(async (req, res) => {
+app.post('/spots', validateSpot, catchAsync(async (req, res) => {
     // if (!req.body.spot) throw new ExpressError('Invalid Spot Data', 400);
-    const spotSchema = Joi.object({
-        spot: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
-    const { error } = spotSchema.validate(req.body);
-    if (error) {
-        const msg =  error.details.map( el => el.message).join(',');
-        throw new ExpressError(msg, 400)
-    }
-    console.log(result)
     const spot = new Campground(req.body.spot)
     await spot.save();
     res.redirect(`/spots/${spot._id}`)
@@ -74,7 +70,7 @@ app.get('/spots/:id/edit', catchAsync(async (req, res) => {
     res.render('spots/edit', {spot})
 }))
 
-app.put('/spots/:id', catchAsync(async (req, res) => {
+app.put('/spots/:id', validateSpot, catchAsync(async (req, res) => {
     const { id } = req.params;
     const spot = await Campground.findByIdAndUpdate(id, { ...req.body.spot })
     res.redirect(`/spots/${spot._id}`)
