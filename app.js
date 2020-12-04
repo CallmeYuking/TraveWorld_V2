@@ -3,12 +3,13 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const Joi = require('joi');
-const {spotSchema} = require('./schemas.js');
+const {spotSchema, reviewSchema} = require('./schemas.js');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override')
 const Campground = require('./models/campground');
-
+const Review = require('./models/review');
+const campground = require('./models/campground');
 
 mongoose.connect('mongodb://localhost:27017/trave-world', {
     useNewUrlParser: true,
@@ -33,6 +34,15 @@ app.use(methodOverride('_method'));
 
 const validateSpot = (req, res, next) => {
     const { error } = spotSchema.validate(req.body);
+    if (error) {
+        const msg =  error.details.map( el => el.message).join(',');
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
     if (error) {
         const msg =  error.details.map( el => el.message).join(',');
         throw new ExpressError(msg, 400)
@@ -80,6 +90,16 @@ app.delete('/spots/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/spots');
+}))
+
+app.post('/spots/:id/reviews', validateReview, catchAsync(async (req, res) =>{
+    const spot = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    spot.reviews.push(review);
+    await review.save();
+    await spot.save();
+    res.redirect(`/spots/${spot._id}`);
+
 }))
 
 app.all('*', (req, res, next) => {
