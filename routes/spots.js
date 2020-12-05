@@ -23,10 +23,12 @@ router.get('/', catchAsync(async (req, res) => {
 router.get('/new', (req, res) => {
     res.render('spots/new')
 })
+
 router.post('/', validateSpot, catchAsync(async (req, res) => {
     // if (!req.body.spot) throw new ExpressError('Invalid Spot Data', 400);
     const spot = new Campground(req.body.spot)
     await spot.save();
+    req.flash('success', 'Successfully made a new spot!');
     res.redirect(`/spots/${spot._id}`)
 }))
 
