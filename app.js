@@ -3,19 +3,17 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const Joi = require('joi');
-const {spotSchema, reviewSchema} = require('./schemas.js');
-const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
-const methodOverride = require('method-override')
-const Campground = require('./models/campground');
-const Review = require('./models/review');
+const methodOverride = require('method-override');
 
 const spots = require('./routes/spots');
+const reviews = require('./routes/reviews')
 
 mongoose.connect('mongodb://localhost:27017/trave-world', {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 });
 
 const db = mongoose.connection;
@@ -34,17 +32,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 
 
-const validateReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if (error) {
-        const msg =  error.details.map( el => el.message).join(',');
-        throw new ExpressError(msg, 400)
-    } else {
-        next();
-    }
-}
 
-app.use("/spots", spots)
+app.use("/spots", spots);
+app.use("/spots/:id/reviews", reviews);
+app.use(express.static(path.join(__dirname, 'public')));
  
 app.get('/', (req, res) => { 
     res.render('home');
@@ -52,22 +43,6 @@ app.get('/', (req, res) => {
 
 
 
-app.post('/spots/:id/reviews', validateReview, catchAsync(async (req, res) =>{
-    const spot = await Campground.findById(req.params.id);
-    const review = new Review(req.body.review);
-    spot.reviews.push(review);
-    await review.save();
-    await spot.save();
-    res.redirect(`/spots/${spot._id}`);
-
-}))
-
-app.delete('/spots/:id/reviews/:reviewId', catchAsync(async (req, res) => {
-    const { id, reviewId } = req.params
-    await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
-    await Review.findByIdAndDelete(req.params.reviewId);
-    res.redirect(`/spots/${id}`)
-}))
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404))

@@ -32,7 +32,6 @@ router.post('/', validateSpot, catchAsync(async (req, res) => {
 
 router.get('/:id', catchAsync(async (req, res) => {
     const spot = await Campground.findById(req.params.id).populate('reviews');
-    console.log(spot);
     res.render('spots/show', { spot })
 }))
 
