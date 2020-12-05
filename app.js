@@ -5,9 +5,12 @@ const ejsMate = require('ejs-mate');
 const Joi = require('joi');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 const spots = require('./routes/spots');
-const reviews = require('./routes/reviews')
+const reviews = require('./routes/reviews');
+const { required } = require('joi');
 
 mongoose.connect('mongodb://localhost:27017/trave-world', {
     useNewUrlParser: true,
@@ -30,18 +33,27 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
-
-
-
-app.use("/spots", spots);
-app.use("/spots/:id/reviews", reviews);
 app.use(express.static(path.join(__dirname, 'public')));
+
+const sessionConfig = {
+    secret: 'thisshouldbeabettersecret!',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+app.use(session(sessionConfig));
+app.use(flash());
  
 app.get('/', (req, res) => { 
     res.render('home');
 })
 
-
+app.use("/spots", spots);
+app.use("/spots/:id/reviews", reviews);
 
 
 app.all('*', (req, res, next) => {
