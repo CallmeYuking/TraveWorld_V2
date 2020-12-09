@@ -35,7 +35,7 @@ router.post('/', isLoggedIn, validateSpot, catchAsync(async (req, res) => {
     res.redirect(`/spots/${spot._id}`)
 }))
 
-router.get('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.get('/:id', catchAsync(async (req, res) => {
     const spot = await Campground.findById(req.params.id).populate('reviews');
     if (!spot) {
         req.flash('error', 'Cannot find that spot!');
