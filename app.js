@@ -11,8 +11,10 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 
-const spots = require('./routes/spots');
-const reviews = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+const spotRoutes = require('./routes/spots');
+const reviewRoutes = require('./routes/reviews');
+
 const { required } = require('joi');
 const { initialize } = require('passport');
 
@@ -51,9 +53,8 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig));
 app.use(flash());
-
-app.use(passport,initialize());
-app.use(passport, session());
+app.use(passport.initialize());
+app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
@@ -65,13 +66,15 @@ app.use((req, res, next) => {
     next();;
 })
 
+
+
+app.use('/', userRoutes);
+app.use("/spots", spotRoutes);
+app.use("/spots/:id/reviews", reviewRoutes);
+
 app.get('/', (req, res) => { 
     res.render('home');
 })
-
-app.use("/spots", spots);
-app.use("/spots/:id/reviews", reviews);
-
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404))
