@@ -6,6 +6,7 @@ const {isLoggedIn} = require('../middleware');
 
 const ExpressError = require('../utils/ExpressError');
 const Campground = require('../models/campground');
+const campground = require('../models/campground');
 
 
 const validateSpot = (req, res, next) => {
@@ -57,7 +58,12 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
 
 router.put('/:id', isLoggedIn, validateSpot, catchAsync(async (req, res) => {
     const { id } = req.params;
-    const spot = await Campground.findByIdAndUpdate(id, { ...req.body.spot })
+    const spot = await Campground.findById(id);
+    if (!spot.author.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do that!');
+        return res.redirect(`/spots/${id}`)
+    }
+    const place = await Campground.findByIdAndUpdate(id, { ...req.body.spot })
     req.flash('success', 'Successfully updated spot!');
     res.redirect(`/spots/${spot._id}`)
 } ))
