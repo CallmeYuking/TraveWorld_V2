@@ -30,13 +30,15 @@ router.get('/new', isLoggedIn, (req, res) => {
 router.post('/', isLoggedIn, validateSpot, catchAsync(async (req, res) => {
     // if (!req.body.spot) throw new ExpressError('Invalid Spot Data', 400);
     const spot = new Campground(req.body.spot)
+    spot.author = req.user._id;
     await spot.save();
     req.flash('success', 'Successfully made a new spot!');
     res.redirect(`/spots/${spot._id}`)
 }))
 
 router.get('/:id', catchAsync(async (req, res) => {
-    const spot = await Campground.findById(req.params.id).populate('reviews');
+    const spot = await Campground.findById(req.params.id).populate('reviews').populate('author');
+    console.log(spot)
     if (!spot) {
         req.flash('error', 'Cannot find that spot!');
         return res.redirect('/spots')
