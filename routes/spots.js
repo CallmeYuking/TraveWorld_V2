@@ -28,7 +28,12 @@ router.post('/', isLoggedIn, validateSpot, catchAsync(async (req, res) => {
 }))
 
 router.get('/:id', catchAsync(async (req, res) => {
-    const spot = await Campground.findById(req.params.id).populate('reviews').populate('author');
+    const spot = await Campground.findById(req.params.id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author');
     console.log(spot)
     if (!spot) {
         req.flash('error', 'Cannot find that spot!');
