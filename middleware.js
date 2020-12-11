@@ -1,4 +1,4 @@
-const {spotSchema} = require('./schemas.js');
+const {spotSchema, reviewSchema} = require('./schemas.js');
 const ExpressError = require('./utils/ExpressError');
 const Campground = require('./models/campground');
 
@@ -29,4 +29,13 @@ module.exports.isAuthor = async (req, res, next) => {
         return res.redirect(`/spots/${id}`)
     }
     next();
+}
+module.exports.validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const msg =  error.details.map( el => el.message).join(',');
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
 }
