@@ -8,18 +8,17 @@ const Campground = require('../models/campground');
 
 
 
-router.get('/', catchAsync(spots.index));
+router.route('/')
+    .get(catchAsync(spots.index))
+    .post(isLoggedIn, validateSpot, catchAsync(spots.createSpot));
 
 router.get('/new', isLoggedIn, spots.renderNewForm);
 
-router.post('/', isLoggedIn, validateSpot, catchAsync(spots.createSpot));
-
-router.get('/:id', catchAsync(spots.showSpot));
+router.route('/:id')
+    .get(catchAsync(spots.showSpot))
+    .put(isLoggedIn, isAuthor, validateSpot, catchAsync(spots.updateEdit))
+    .delete(isLoggedIn, isAuthor, catchAsync(spots.deleteSpot))
 
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(spots.showEditForm))
-
-router.put('/:id', isLoggedIn, isAuthor, validateSpot, catchAsync(spots.updateEdit))
-
-router.delete('/:id', isLoggedIn, isAuthor, catchAsync(spots.deleteSpot))
 
 module.exports = router;
