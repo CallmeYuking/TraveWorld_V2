@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const {isLoggedIn, isAuthor, validateSpot} = require('../middleware');
-const spots = require('../controllers/spots')
+const spots = require('../controllers/spots');
 const Campground = require('../models/campground');
-
+const multer  = require('multer');
+const upload = multer({ dest: 'uploads/' })
 
 
 
