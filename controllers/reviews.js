@@ -6,6 +6,7 @@ module.exports.createReview = async (req, res) =>{
     const review = new Review(req.body.review);
     review.author = req.user._id;
     spot.reviews.push(review);
+    console.log(review);
     await review.save();
     await spot.save();
     req.flash('success', 'Created new review!')

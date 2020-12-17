@@ -9,8 +9,10 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary,
-    folder: 'TraveWorld',
-    allowedFormats: ['jpeg', 'png', 'jpg']
+    params: {
+        folder: 'TraveWorld',
+        allowedFormats: ['jpeg', 'png', 'jpg']
+    }
 });
 
 module.exports = {

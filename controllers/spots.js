@@ -9,11 +9,12 @@ module.exports.renderNewForm = (req, res) => {
     res.render('spots/new')
 }
 
-module.exports.createSpot = async (req, res) => {
-    // if (!req.body.spot) throw new ExpressError('Invalid Spot Data', 400);
+module.exports.createSpot = async (req, res, next) => {
     const spot = new Campground(req.body.spot)
+    spot.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     spot.author = req.user._id;
     await spot.save();
+    console.log(spot)
     req.flash('success', 'Successfully made a new spot!');
     res.redirect(`/spots/${spot._id}`)
 }
