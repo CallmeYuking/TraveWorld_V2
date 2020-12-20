@@ -27,9 +27,18 @@ const seedDB = async () => {
             author: '5fd082762af818e2a8f1f0d7',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
-            image: 'https://source.unsplash.com/collection/885364',
             description: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Obcaecati corporis maxime ad vitae sunt est distinctio neque, delectus mollitia autem optio libero magnam. Rem quod ratione aliquam quaerat a modi!',
-            price: price
+            price: price,
+            images: [
+                {
+                  url: 'https://res.cloudinary.com/yuking/image/upload/v1608258806/TraveWorld/t6qebtd9xrztj4hx7pvb.jpg',
+                  filename: 'TraveWorld/t6qebtd9xrztj4hx7pvb'
+                },
+                {
+                  url: 'https://res.cloudinary.com/yuking/image/upload/v1608258801/TraveWorld/usklxwfmtpdmrcbl5sty.jpg',
+                  filename: 'TraveWorld/usklxwfmtpdmrcbl5sty'
+                }
+              ]
         });
         await place.save();
     }
