@@ -24,15 +24,20 @@ const seedDB = async () => {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 100) + 10;
         const place = new Campground({
+            // Your author ID
             author: '5fd082762af818e2a8f1f0d7',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
             description: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Obcaecati corporis maxime ad vitae sunt est distinctio neque, delectus mollitia autem optio libero magnam. Rem quod ratione aliquam quaerat a modi!',
             price: price,
+            geometry: {
+                type: "Point",
+                coordinates: [-113.1331, 47.0202]
+            },
             images: [
                 {
-                  url: 'https://res.cloudinary.com/yuking/image/upload/v1608258806/TraveWorld/t6qebtd9xrztj4hx7pvb.jpg',
-                  filename: 'TraveWorld/t6qebtd9xrztj4hx7pvb'
+                  url: 'https://res.cloudinary.com/yuking/image/upload/v1608256512/TraveWorld/ey4jj53ydt7f3ng2cybl.jpg',
+                  filename: 'TraveWorld/ey4jj53ydt7f3ng2cybl'
                 },
                 {
                   url: 'https://res.cloudinary.com/yuking/image/upload/v1608258801/TraveWorld/usklxwfmtpdmrcbl5sty.jpg',
