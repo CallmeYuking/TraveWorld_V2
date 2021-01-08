@@ -39,12 +39,12 @@ const seedDB = async () => {
             },
             images: [
                 {
-                  url: 'https://res.cloudinary.com/yuking/image/upload/v1608256512/TraveWorld/ey4jj53ydt7f3ng2cybl.jpg',
-                  filename: 'TraveWorld/ey4jj53ydt7f3ng2cybl'
+                  url: 'https://res.cloudinary.com/yuking/image/upload/v1608951983/TraveWorld/b7kjo8hmafycfwfqymjs.jpg',
+                  filename: 'TraveWorld/b7kjo8hmafycfwfqymjs'
                 },
                 {
-                  url: 'https://res.cloudinary.com/yuking/image/upload/v1608258801/TraveWorld/usklxwfmtpdmrcbl5sty.jpg',
-                  filename: 'TraveWorld/usklxwfmtpdmrcbl5sty'
+                  url: 'https://res.cloudinary.com/yuking/image/upload/v1608959509/TraveWorld/p1wz4xw4cb9euhwkyqln.jpg',
+                  filename: 'TraveWorld/p1wz4xw4cb9euhwkyqln'
                 }
               ]
         });
