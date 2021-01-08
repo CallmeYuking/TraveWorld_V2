@@ -18,11 +18,14 @@ const User = require('./models/user');
 const userRoutes = require('./routes/users');
 const spotRoutes = require('./routes/spots');
 const reviewRoutes = require('./routes/reviews');
+const MongoDBStore = require("connect-mongo")(session);
+// const dbUrl = process.env.DB_URL;
 
 const { required } = require('joi');
 const { initialize } = require('passport');
 
-mongoose.connect('mongodb://localhost:27017/trave-world', {
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/trave-world'
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -45,8 +48,22 @@ app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const secret = process.env.SECRECT || 'thisshouldbeabettersecret!';
+
+const store = new MongoDBStore({
+    url: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60
+})
+
+store.on("error", function (e) {
+    console.log("session store error", e)
+})
+
 const sessionConfig = {
-    secret: 'thisshouldbeabettersecret!',
+    store,
+    name: 'session',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
